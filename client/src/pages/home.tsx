@@ -6,8 +6,11 @@ import { apiRequest } from "@/lib/queryClient";
 import { queryClient } from "@/lib/queryClient";
 import type { Message } from "@shared/schema";
 import { Scale } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Home() {
+  const { toast } = useToast();
+
   const { data: messages, isLoading } = useQuery<Message[]>({
     queryKey: ["/api/messages"],
   });
@@ -15,10 +18,21 @@ export default function Home() {
   const mutation = useMutation({
     mutationFn: async (content: string) => {
       const res = await apiRequest("POST", "/api/messages", { content });
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message);
+      }
       return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
+    },
+    onError: (error: Error) => {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message || "Failed to send message. Please try again.",
+      });
     },
   });
 
@@ -47,6 +61,11 @@ export default function Home() {
                 messages?.map((message) => (
                   <ChatMessage key={message.id} message={message} />
                 ))
+              )}
+              {mutation.isPending && (
+                <div className="text-center text-muted-foreground animate-pulse">
+                  AI assistant is thinking...
+                </div>
               )}
             </div>
           </ScrollArea>

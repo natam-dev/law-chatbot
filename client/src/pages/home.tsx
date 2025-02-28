@@ -18,20 +18,25 @@ export default function Home() {
   const mutation = useMutation({
     mutationFn: async (content: string) => {
       const res = await apiRequest("POST", "/api/messages", { content });
+      const data = await res.json();
+
       if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.message);
+        // If we have a user message saved, we should refetch to show it
+        if (data.userMessageSaved) {
+          queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
+        }
+        throw new Error(data.message);
       }
-      return res.json();
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
     },
     onError: (error: Error) => {
       toast({
-        variant: "destructive",
-        title: "Error",
-        description: error.message || "Failed to send message. Please try again.",
+        // Use default variant instead of destructive for a softer appearance
+        title: "AI Assistant Unavailable",
+        description: error.message,
       });
     },
   });

@@ -2,7 +2,7 @@ import OpenAI from "openai";
 
 // the newest OpenAI model is "gpt-4o" which was released May 13, 2024
 const openai = new OpenAI({ 
-  apiKey: process.env.OPENAI_API_KEY || "your-api-key"
+  apiKey: process.env.OPENAI_API_KEY
 });
 
 const SYSTEM_PROMPT = `You are an expert Indian legal assistant. Provide clear, accurate legal information based on Indian law.

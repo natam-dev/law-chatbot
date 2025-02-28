@@ -3,7 +3,129 @@ type LegalTopic = {
   response: string;
 };
 
+// IPC Sections Database
+const ipcSections = {
+  "420": {
+    title: "Cheating and dishonestly inducing delivery of property",
+    definition: "Whoever cheats and thereby dishonestly induces the person deceived to deliver any property to any person, or to make, alter or destroy the whole or any part of a valuable security.",
+    punishment: "Imprisonment up to 7 years and fine",
+    elements: [
+      "Deception or fraudulent behavior",
+      "Dishonest intention",
+      "Inducement to deliver property",
+      "Actual delivery or alteration of property"
+    ]
+  },
+  "406": {
+    title: "Criminal Breach of Trust",
+    definition: "Whoever dishonestly misappropriates or converts to their own use any movable property entrusted to them.",
+    punishment: "Imprisonment up to 3 years, or fine, or both",
+    elements: [
+      "Entrustment of property",
+      "Dishonest misappropriation",
+      "Conversion to own use",
+      "Breach of trust"
+    ]
+  },
+  "498A": {
+    title: "Matrimonial Cruelty",
+    definition: "Husband or relative of husband subjecting wife to cruelty.",
+    punishment: "Imprisonment up to 3 years and fine",
+    elements: [
+      "Mental or physical cruelty",
+      "Harassment for dowry",
+      "Conduct likely to drive to suicide",
+      "Grave injury or danger to life/limb"
+    ]
+  }
+};
+
 const legalTopics: LegalTopic[] = [
+  {
+    keywords: ["420", "cheating", "fraud", "dishonest", "property", "money", "scam"],
+    response: `IPC Section 420 - Cheating and Fraud:
+
+1. Legal Definition:
+${ipcSections["420"].definition}
+
+2. Essential Elements:
+${ipcSections["420"].elements.map(e => "- " + e).join("\n")}
+
+3. Punishment:
+${ipcSections["420"].punishment}
+
+4. Steps You Can Take:
+- File a written complaint at local police station
+- Gather all documentary evidence (transactions, communications)
+- File FIR under Section 420 IPC
+- Consider filing case in consumer forum if applicable
+- Seek legal counsel for civil recovery
+
+5. Important Tips:
+- Maintain record of all transactions
+- Save all communication with accused
+- Get witness statements if available
+- Document financial losses
+- Consider mediation before legal action
+
+For immediate assistance:
+- Police Control Room: 100
+- Cyber Crime Helpline: 1930
+- Legal Services Authority: 1516`
+  },
+  {
+    keywords: ["division", "department", "doj", "ministry", "organization", "structure"],
+    response: `Department of Justice (DoJ) - Organization and Functions:
+
+1. Organizational Structure:
+- Headed by Secretary of Justice
+- Part of Ministry of Law & Justice
+- Reports to Union Law Minister
+
+2. Key Divisions:
+a) Legal Affairs Division
+   - Policy formulation
+   - Legal reforms
+   - Legislative drafting
+
+b) Judicial Appointments Division
+   - Supreme Court appointments
+   - High Court appointments
+   - Service conditions
+
+c) Infrastructure Development Division
+   - Court building projects
+   - Modernization schemes
+   - Facility management
+
+d) eCourts Project Division
+   - Court computerization
+   - Digital initiatives
+   - Online services
+
+e) Access to Justice Division
+   - Legal aid programs
+   - Public awareness
+   - Special court projects
+
+3. Main Functions:
+- Development of Judiciary Infrastructure
+- Implementation of eCourts Project
+- Fast Track Special Courts management
+- Legal aid and justice access
+- Judicial appointments
+- Training programs
+
+4. Current Initiatives:
+- eCourts Phase III
+- Fast Track Special Courts
+- Gram Nyayalayas
+- National Mission for Justice Delivery
+
+For more information:
+Visit: www.doj.gov.in
+Email: contact@doj.gov.in`
+  },
   {
     keywords: ["consumer", "product", "defective", "refund", "warranty", "goods", "service", "shop", "purchase", "buy"],
     response: `Under the Consumer Protection Act, 2019:
@@ -117,31 +239,6 @@ Important Contacts:
 - Police Emergency: 100
 - Women Helpline: 1091
 - Crime Stoppers: 1090`
-  },
-  {
-    keywords: ["division", "department", "doj", "ministry", "organization", "structure"],
-    response: `Department of Justice (DoJ) - Organizational Structure:
-
-1. Main Divisions:
-- Legal Affairs Division
-- Judicial Appointments Division
-- Infrastructure Development Division
-- eCourts Project Division
-- Access to Justice Division
-
-2. Key Functions:
-- Development of Judiciary Infrastructure
-- Appointment of Judges
-- Implementation of eCourts Project
-- Management of Fast Track Special Courts
-- Oversight of Legal Aid Programs
-
-3. Leadership:
-- Headed by the Secretary of Justice
-- Part of Ministry of Law & Justice
-- Works under direct supervision of Law Minister
-
-For more details, visit the official DoJ website.`
   },
   {
     keywords: ["judge", "appointment", "vacancy", "supreme", "high court", "district court", "judicial"],
@@ -315,33 +412,43 @@ Download from: play.google.com/store/apps/details?id=ecourts.gov.in`
   }
 ];
 
-const defaultResponse = `Welcome to the Department of Justice (DoJ) Assistant. I can help you with:
-
-1. Available Services:
-- Information about DoJ divisions
-- Judicial appointments & vacancies
-- Case status and pendency
-- eFiling and ePay services
-- Fast track courts
-- Court case live streaming
-
-2. How to Get Help:
-- Type your query about any DoJ service
-- Ask about specific procedures
-- Request contact information
-- Seek guidance on legal processes
-
-3. Important Links:
-- DoJ Website: www.doj.gov.in
-- eCourts: www.ecourts.gov.in
-- NJDG: njdg.ecourts.gov.in
-
-For specific legal advice, please consult a qualified legal professional.`;
-
+// Enhanced response generation with problem analysis
 export function generateLegalResponse(query: string): string {
   const lowercaseQuery = query.toLowerCase();
 
-  // Find the most relevant topic based on keyword matches
+  // Check for IPC section numbers in query
+  const sectionMatch = query.match(/\b(\d{3}[A-Z]?)\b/);
+  if (sectionMatch && ipcSections[sectionMatch[1]]) {
+    const section = sectionMatch[1];
+    return `IPC Section ${section} Analysis:
+
+1. Legal Definition:
+${ipcSections[section].definition}
+
+2. Essential Elements:
+${ipcSections[section].elements.map(e => "- " + e).join("\n")}
+
+3. Punishment:
+${ipcSections[section].punishment}
+
+4. Legal Recourse:
+- File police complaint
+- Gather evidence
+- Seek legal representation
+- Consider alternative dispute resolution
+- Approach appropriate court
+
+5. Required Documentation:
+- Written complaint
+- Supporting evidence
+- Witness statements
+- Financial records (if applicable)
+- Medical records (if applicable)
+
+For specific legal advice, please consult a qualified lawyer.`;
+  }
+
+  // Find most relevant topic based on keyword matches
   let bestMatch: LegalTopic | null = null;
   let maxMatches = 0;
 
@@ -360,5 +467,31 @@ export function generateLegalResponse(query: string): string {
     return bestMatch.response;
   }
 
-  return defaultResponse;
+  return `Welcome to DoJ Legal Assistant!
+
+1. How I Can Help:
+- Explain IPC sections and legal procedures
+- Provide information about DoJ services
+- Guide you through legal processes
+- Connect you with appropriate resources
+
+2. Available Information:
+- IPC Section definitions
+- Legal procedures
+- DoJ departments
+- Court services
+- Filing procedures
+
+3. To Get Specific Help:
+- Mention specific IPC section numbers
+- Describe your legal situation
+- Ask about specific DoJ services
+- Inquire about court procedures
+
+4. Important Resources:
+- Police Emergency: 100
+- Legal Services: 1516
+- Women Helpline: 1091
+- Child Helpline: 1098
+- Consumer Helpline: 1800-11-4000`;
 }

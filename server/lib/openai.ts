@@ -22,8 +22,11 @@ export async function getLegalResponse(query: string): Promise<string> {
     });
 
     return response.choices[0].message.content || "I apologize, I wasn't able to process that request.";
-  } catch (error) {
+  } catch (error: any) {
     console.error("OpenAI API error:", error);
+    if (error.status === 429) {
+      throw new Error("The AI assistant is currently unavailable due to high demand. Please check your OpenAI API key quota and try again later.");
+    }
     throw new Error("Failed to get response from legal assistant");
   }
 }

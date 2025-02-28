@@ -34,8 +34,6 @@ export default function Home() {
     },
     onError: (error: Error) => {
       toast({
-        // Use default variant instead of destructive for a softer appearance
-        title: "AI Assistant Unavailable",
         description: error.message,
       });
     },

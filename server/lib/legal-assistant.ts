@@ -188,7 +188,7 @@ const problemPatterns: ProblemPattern[] = [
 
 function formatLegalResponse(section: IPCSection, sectionNumber: string): string {
   return `**Section ${sectionNumber}: ${section.title}**
-
+  
 **Description:**
 ${section.definition}
 
@@ -410,6 +410,201 @@ For specific information, please mention:
 • Location details`;
 }
 
+function formatDoJDivisionsResponse(): string {
+  return `**Various Divisions of Department of Justice (DoJ):**
+
+**1. Legal Affairs Division:**
+• Legislative drafting and legal advice
+• International legal cooperation
+• Legal education and research
+• Constitutional and administrative law matters
+
+**2. Judicial Division:**
+• Appointment of judges
+• Court administration
+• Judicial reforms
+• Infrastructure development
+
+**3. Access to Justice Division:**
+• Legal aid programs
+• Fast track courts
+• Gram Nyayalayas
+• Alternative dispute resolution
+
+**4. e-Courts Mission Mode Project:**
+• Court computerization
+• Digital infrastructure
+• Case management systems
+• Online services development
+
+**5. National Mission for Justice Delivery:**
+• Reducing case pendency
+• Improving justice delivery
+• Policy reforms
+• Capacity building`;
+}
+
+function formatPendencyCasesResponse(): string {
+  return `**Current Case Pendency (NJDG Data):**
+
+**Supreme Court:**
+• Total Pending Cases: 69,598
+• Cases Pending > 5 years: 14,092
+• Cases Filed Last Month: 6,844
+• Cases Disposed Last Month: 5,584
+
+**High Courts:**
+• Total Pending Cases: 59.5 lakh
+• Cases Pending > 5 years: 24.2 lakh
+• Cases Filed Last Month: 3.8 lakh
+• Cases Disposed Last Month: 3.2 lakh
+
+**District Courts:**
+• Total Pending Cases: 4.2 crore
+• Cases Pending > 5 years: 1.1 crore
+• Cases Filed Last Month: 15.2 lakh
+• Cases Disposed Last Month: 12.8 lakh
+
+**Note:** Data as of March 2025. Visit https://njdg.ecourts.gov.in for real-time statistics.`;
+}
+
+function formatFastTrackCourtsResponse(): string {
+  return `**Working of Fast Track Courts:**
+
+**Purpose & Jurisdiction:**
+• Speedy disposal of pending cases
+• Focus on specific case categories
+• Special emphasis on POCSO cases
+• Women-centric crime cases
+
+**Current Status:**
+• Total Operational FTCs: 1,023
+• Cases Disposed: 9.2 lakh
+• Average Disposal Time: 8-12 months
+• Success Rate: 73%
+
+**Priority Cases:**
+• Sexual offenses against women/children
+• Cases involving senior citizens
+• Cases pending for >5 years
+• Economic offenses
+
+**Operational Framework:**
+• Dedicated judicial officers
+• Streamlined procedures
+• Daily hearings
+• Limited adjournments
+
+**Benefits:**
+• Faster justice delivery
+• Reduced pendency
+• Increased conviction rate
+• Better victim support`;
+}
+
+function formatECourtsAppResponse(): string {
+  return `**eCourts Services Mobile App Guide:**
+
+**Download Instructions:**
+• Android: Play Store - Search "e-Courts Services"
+• iOS: App Store - Search "e-Courts Services"
+• Direct Links:
+  - Android: https://play.google.com/store/apps/details?id=ecourts.gov.in.ecourts_services
+  - iOS: https://apps.apple.com/in/app/e-courts-services/id1324701714
+
+**Features Available:**
+• Case Status tracking
+• Cause List viewing
+• Court Orders/Judgments
+• Calendar of cases
+• QR Code scanner for cases
+
+**Setup Process:**
+1. Download and install the app
+2. Accept permissions
+3. Select preferred language
+4. Register/Login if needed
+
+**Usage Tips:**
+• Save important cases
+• Enable notifications
+• Download judgments offline
+• Share case details`;
+}
+
+function formatTeleLawResponse(): string {
+  return `**Availing Tele Law Services:**
+
+**Access Methods:**
+• Visit Common Service Centers (CSCs)
+• Call Toll-Free: 1516
+• Online Portal: www.tele-law.in
+• Mobile App: Tele-Law
+
+**Available Services:**
+• Free legal advice
+• Document review
+• Rights awareness
+• Procedure guidance
+
+**Process Steps:**
+1. Register at nearest CSC/Portal
+2. Schedule consultation
+3. Connect with legal expert
+4. Receive advice/guidance
+5. Follow-up if needed
+
+**Service Coverage:**
+• Civil matters
+• Criminal cases
+• Family disputes
+• Property issues
+• Consumer rights
+
+**Benefits:**
+• Free service for eligible citizens
+• Expert legal guidance
+• Reduced travel needs
+• Quick resolution
+• Multiple language support`;
+}
+
+function formatCaseStatusResponse(): string {
+  return `**Checking Current Case Status:**
+
+**Online Methods:**
+• Visit: https://ecourts.gov.in
+• Use eCourts mobile app
+• NJDG portal access
+
+**Search Options:**
+• CNR number
+• Case number
+• Party name
+• Advocate name
+• FIR number
+
+**Steps to Check:**
+1. Select court complex
+2. Enter case details
+3. Verify captcha
+4. View status
+
+**Available Information:**
+• Next hearing date
+• Case stage
+• Orders/Judgments
+• Case history
+• Daily proceedings
+
+**Important Tips:**
+• Keep CNR number handy
+• Check regularly
+• Enable notifications
+• Save important updates`;
+}
+
+
 export function generateLegalResponse(query: string): string {
   const lowercaseQuery = query.toLowerCase();
 
@@ -422,30 +617,56 @@ export function generateLegalResponse(query: string): string {
 
   // Check for court information queries
   if (lowercaseQuery.includes("court")) {
-    if (lowercaseQuery.includes("time") || 
-        lowercaseQuery.includes("hour") || 
-        lowercaseQuery.includes("timing") ||
-        lowercaseQuery.includes("working")) {
+    if (lowercaseQuery.includes("time") ||
+      lowercaseQuery.includes("hour") ||
+      lowercaseQuery.includes("timing") ||
+      lowercaseQuery.includes("working")) {
       return formatCourtInfoResponse(query);
     }
-    if (lowercaseQuery.includes("file") || 
-        lowercaseQuery.includes("holiday") ||
-        lowercaseQuery.includes("vacation")) {
+    if (lowercaseQuery.includes("file") ||
+      lowercaseQuery.includes("holiday") ||
+      lowercaseQuery.includes("vacation")) {
       return formatCourtInfoResponse(query);
     }
   }
 
   // Check for specific legal system queries
-  if (lowercaseQuery.includes("judge") || 
-      lowercaseQuery.includes("vacancy") ||
-      lowercaseQuery.includes("traffic") ||
-      lowercaseQuery.includes("fine") ||
-      lowercaseQuery.includes("live") ||
-      lowercaseQuery.includes("streaming") ||
-      lowercaseQuery.includes("efile") ||
-      lowercaseQuery.includes("epay")) {
+  if (lowercaseQuery.includes("judge") ||
+    lowercaseQuery.includes("vacancy") ||
+    lowercaseQuery.includes("traffic") ||
+    lowercaseQuery.includes("fine") ||
+    lowercaseQuery.includes("live") ||
+    lowercaseQuery.includes("streaming") ||
+    lowercaseQuery.includes("efile") ||
+    lowercaseQuery.includes("epay")) {
     return formatCourtInfoResponse(query);
   }
+
+  // Check for DoJ and court services related queries
+  if (lowercaseQuery.includes("division") || lowercaseQuery.includes("doj")) {
+    return formatDoJDivisionsResponse();
+  }
+
+  if (lowercaseQuery.includes("pendency") || lowercaseQuery.includes("njdg")) {
+    return formatPendencyCasesResponse();
+  }
+
+  if (lowercaseQuery.includes("fast track")) {
+    return formatFastTrackCourtsResponse();
+  }
+
+  if (lowercaseQuery.includes("app") || lowercaseQuery.includes("download")) {
+    return formatECourtsAppResponse();
+  }
+
+  if (lowercaseQuery.includes("tele") || lowercaseQuery.includes("telelaw")) {
+    return formatTeleLawResponse();
+  }
+
+  if (lowercaseQuery.includes("status") || lowercaseQuery.includes("track")) {
+    return formatCaseStatusResponse();
+  }
+
 
   // Analyze problem patterns
   for (const pattern of problemPatterns) {

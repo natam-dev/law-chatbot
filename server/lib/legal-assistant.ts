@@ -282,6 +282,102 @@ Note: Timings may vary during summer/winter or due to special circumstances.`;
 **Note:** Vacation benches are available for urgent matters during court vacations.`;
   }
 
+  if (query.toLowerCase().includes("judge") || query.toLowerCase().includes("vacancy")) {
+    return `**Current Judicial Appointments and Vacancies:**
+
+**Supreme Court:**
+• Sanctioned Strength: 34 judges
+• Current Working Strength: 28 judges
+• Vacancies: 6 positions
+
+**High Courts:**
+• Total Sanctioned Strength: 1108 judges
+• Current Working Strength: 776 judges
+• Vacancies: 332 positions
+
+**District & Subordinate Courts:**
+• Total Sanctioned Strength: 24,631 judges
+• Current Working Strength: 19,292 judges
+• Vacancies: 5,339 positions
+
+**Note:** Numbers are approximate and subject to change. Visit https://main.sci.gov.in for current data.`;
+  }
+
+  if (query.toLowerCase().includes("traffic") || query.toLowerCase().includes("fine")) {
+    return `**Traffic Fine Payment Process:**
+
+**Online Payment Methods:**
+• Visit the e-Challan website: https://echallan.parivahan.gov.in
+• Use payment gateways on state police websites
+• Use mobile apps like mParivahan
+
+**Steps for Payment:**
+1. Enter challan/vehicle number
+2. Verify violation details
+3. Select payment mode
+4. Complete payment
+5. Save payment receipt
+
+**Alternative Methods:**
+• Visit nearest traffic police station
+• Pay at authorized banks
+• Use citizen service centers
+
+**Important Notes:**
+• Keep payment receipt safe
+• Check for any pending challans
+• Update vehicle documents`;
+  }
+
+  if (query.toLowerCase().includes("live") || query.toLowerCase().includes("streaming")) {
+    return `**Live Streaming of Court Cases:**
+
+**Access Methods:**
+• Supreme Court website: https://webcast.gov.in/scindia/
+• YouTube Channel: Supreme Court of India
+• NIC Webcast Portal
+
+**Available Proceedings:**
+• Constitutional Bench matters
+• Cases of national importance
+• Select PIL hearings
+• Special reference cases
+
+**Viewing Guidelines:**
+• Check daily cause list for streamed cases
+• Follow court etiquette while viewing
+• Do not record/share streams
+• Check technical requirements beforehand`;
+  }
+
+  if (query.toLowerCase().includes("efile") || query.toLowerCase().includes("epay")) {
+    return `**eFiling and ePay Information:**
+
+**eFiling Steps:**
+1. Register on https://efiling.ecourts.gov.in
+2. Upload case documents
+3. Pay court fees online
+4. Submit for scrutiny
+5. Track filing status
+
+**Required Documents:**
+• Digital signature (Class 2/3)
+• Scanned documents (PDF)
+• Properly indexed annexures
+• Party details
+
+**ePay Facilities:**
+• Court fees
+• Fine payment
+• Judicial deposits
+• Process fees
+
+**Help Resources:**
+• eFiling tutorial videos
+• 24x7 helpdesk: 1800-XXXXXX
+• Email support: support@ecourts.gov.in`;
+  }
+
   // Default court information
   return `**General Court Information:**
 
@@ -337,6 +433,18 @@ export function generateLegalResponse(query: string): string {
         lowercaseQuery.includes("vacation")) {
       return formatCourtInfoResponse(query);
     }
+  }
+
+  // Check for specific legal system queries
+  if (lowercaseQuery.includes("judge") || 
+      lowercaseQuery.includes("vacancy") ||
+      lowercaseQuery.includes("traffic") ||
+      lowercaseQuery.includes("fine") ||
+      lowercaseQuery.includes("live") ||
+      lowercaseQuery.includes("streaming") ||
+      lowercaseQuery.includes("efile") ||
+      lowercaseQuery.includes("epay")) {
+    return formatCourtInfoResponse(query);
   }
 
   // Analyze problem patterns

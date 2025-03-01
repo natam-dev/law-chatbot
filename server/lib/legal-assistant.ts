@@ -1,10 +1,31 @@
-type LegalTopic = {
-  keywords: string[];
-  response: string;
-};
+import { type LegalSection } from "@shared/schema";
 
-// IPC Sections Database
-const ipcSections = {
+// Define strongly typed interfaces
+interface IPCSection {
+  title: string;
+  definition: string;
+  punishment: string;
+  elements: string[];
+}
+
+interface ProblemPattern {
+  keywords: string[];
+  section: keyof typeof ipcSections;
+}
+
+// Type-safe IPC Sections Database
+const ipcSections: Record<string, IPCSection> = {
+  "302": {
+    title: "Murder",
+    definition: "Whoever causes death with the intention of causing death, or causes such bodily injury that is likely to cause death.",
+    punishment: "Death or imprisonment for life, and shall also be liable to fine",
+    elements: [
+      "Intention to cause death",
+      "Act of causing death",
+      "Causation between act and death",
+      "Death of the person"
+    ]
+  },
   "378": {
     title: "Theft",
     definition: "Whoever, intending to take dishonestly any movable property out of the possession of any person without that person's consent, moves that property.",
@@ -27,99 +48,131 @@ const ipcSections = {
       "Actual delivery or alteration of property"
     ]
   },
-  "406": {
-    title: "Criminal Breach of Trust",
-    definition: "Whoever dishonestly misappropriates or converts to their own use any movable property entrusted to them.",
-    punishment: "Imprisonment up to 3 years, or fine, or both",
+  "376": {
+    title: "Punishment for rape",
+    definition: "Sexual assault without consent or with consent obtained under duress or false pretenses.",
+    punishment: "Rigorous imprisonment not less than 10 years, may extend to life imprisonment, and fine",
     elements: [
-      "Entrustment of property",
-      "Dishonest misappropriation",
-      "Conversion to own use",
-      "Breach of trust"
+      "Non-consensual sexual acts",
+      "Use of force or threat",
+      "Abuse of power or authority",
+      "Victim's inability to consent"
     ]
   }
 };
 
-// Common problem patterns and their corresponding IPC sections
-const problemPatterns = [
+// Type-safe problem patterns
+const problemPatterns: ProblemPattern[] = [
   {
-    keywords: ["stolen", "theft", "steal", "took", "missing", "robbed", "snatched", "pickpocket"],
+    keywords: ["murder", "killed", "death", "died", "killing"],
+    section: "302"
+  },
+  {
+    keywords: ["stolen", "theft", "steal", "took", "missing", "robbed", "snatched"],
     section: "378"
   },
   {
-    keywords: ["cheated", "fraud", "scam", "deceived", "fake", "duped", "forged"],
+    keywords: ["cheated", "fraud", "scam", "deceived", "fake", "duped"],
     section: "420"
   },
   {
-    keywords: ["trust", "misappropriate", "entrusted", "custody", "kept"],
-    section: "406"
+    keywords: ["rape", "sexual assault", "forced", "molested"],
+    section: "376"
   }
 ];
 
-// Enhanced response generation with problem analysis
+function formatLegalResponse(section: IPCSection, sectionNumber: string): string {
+  return `Section ${sectionNumber}: ${section.title}
+
+Description: ${section.definition}
+
+Key Elements:
+${section.elements.map(e => `• ${e}`).join('\n')}
+
+Punishment: ${section.punishment}
+
+Victim Guidance:
+1. File a First Information Report (FIR) at the nearest police station immediately
+2. Document all evidence and maintain records of the incident
+3. Seek medical attention if needed and preserve medical reports
+4. Consider getting legal representation
+5. Keep track of all police and legal proceedings
+
+Emergency Contacts:
+• Police Emergency: 100
+• Women Helpline: 1091
+• Legal Services Authority: 1516
+• Ambulance: 108`;
+}
+
+function formatCourtInfoResponse(query: string): string {
+  if (query.toLowerCase().includes("timing") || query.toLowerCase().includes("hours")) {
+    return `Court Operating Hours:
+
+• Regular Court Hours: Monday to Friday, 10:00 AM to 5:00 PM
+• Filing Counter: 10:30 AM to 4:30 PM
+• Lunch Break: 1:00 PM to 2:00 PM
+• Saturday/Sunday: Closed (except special hearings)
+
+Note: Timings may vary during summer/winter or due to special circumstances. Please verify with the specific court.`;
+  }
+
+  return `General Court Information:
+
+Operating Hours: Monday to Friday, 10:00 AM to 5:00 PM
+Location: Visit district court websites for specific locations
+Filing: Documents can be filed between 10:30 AM to 4:30 PM
+Contact: Visit https://districts.ecourts.gov.in/ for specific court contact information
+
+For more specific information, please mention the particular court or query type (timing/location/contact/filing).`;
+}
+
 export function generateLegalResponse(query: string): string {
   const lowercaseQuery = query.toLowerCase();
 
-  // Check for explicit IPC section numbers
+  // Check for explicit section numbers
   const sectionMatch = query.match(/\b(\d{3}[A-Z]?)\b/);
+  if (sectionMatch && sectionMatch[1] in ipcSections) {
+    const section = sectionMatch[1];
+    return formatLegalResponse(ipcSections[section], section);
+  }
 
-  // Check for problem patterns
+  // Check for court information queries
+  if (lowercaseQuery.includes("court") && 
+      (lowercaseQuery.includes("time") || 
+       lowercaseQuery.includes("hour") || 
+       lowercaseQuery.includes("timing") ||
+       lowercaseQuery.includes("working"))) {
+    return formatCourtInfoResponse(query);
+  }
+
+  // Analyze problem patterns
   for (const pattern of problemPatterns) {
     if (pattern.keywords.some(keyword => lowercaseQuery.includes(keyword))) {
       const section = pattern.section;
-      if (ipcSections[section]) {
-        return `Based on your query, this appears to be a case under IPC Section ${section} (${ipcSections[section].title}).
+      return `Based on your description, this appears to be related to ${ipcSections[section].title} (Section ${section}).
 
-Legal Definition: ${ipcSections[section].definition}
+${formatLegalResponse(ipcSections[section], section)}
 
-Key Elements Required:
-${ipcSections[section].elements.map(e => "• " + e).join("\n")}
+Additional Recommendations:
+• File a police complaint as soon as possible
+• Gather any evidence (photos, documents, witnesses)
+• Keep a written record of the incident
+• Consider getting legal representation
+• Stay in touch with investigating officers`;
+    }
+  }
 
-Punishment: ${ipcSections[section].punishment}
+  // If no specific match found
+  return `I apologize, but I couldn't identify a specific legal section matching your query. To better assist you, please:
 
-Recommended Steps:
-1. File a police complaint with all details and evidence
-2. Obtain a copy of the FIR for your records
-3. Keep all relevant documents and proof safely
-4. Consider seeking legal representation
-5. Follow up with investigating officer regularly
+1. Provide more details about the incident
+2. Mention specific IPC sections if known
+3. Use key terms describing the nature of the crime
+4. Specify if you're looking for court information
 
 For immediate assistance:
 • Police Emergency: 100
 • Legal Services: 1516
-• Cyber Crime Helpline: 1930`;
-      }
-    }
-  }
-
-  // Check for explicit section numbers after pattern matching
-  if (sectionMatch && ipcSections[sectionMatch[1]]) {
-    const section = sectionMatch[1];
-    return `Information about IPC Section ${section} (${ipcSections[section].title}):
-
-Legal Definition: ${ipcSections[section].definition}
-
-Key Elements Required:
-${ipcSections[section].elements.map(e => "• " + e).join("\n")}
-
-Punishment: ${ipcSections[section].punishment}
-
-Legal Process:
-1. File a detailed police complaint
-2. Collect and preserve all evidence
-3. Get witness statements if available
-4. Consider legal representation
-5. Follow proper legal procedures
-
-For guidance:
-• Police Emergency: 100
-• Legal Services: 1516`;
-  }
-
-  // If no specific legal match is found
-  return `I apologize, but I couldn't find specific legal information matching your query. Please try:
-• Using specific IPC section numbers
-• Describing the incident more clearly
-• Mentioning key legal terms
-• Asking about specific DoJ services`;
+• Women's Helpline: 1091`;
 }

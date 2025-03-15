@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from typing import Dict, List, TypedDict, Optional
 
 app = Flask(__name__)
@@ -15,33 +15,38 @@ class ProblemPattern(TypedDict):
     section: str
 
 def format_legal_response(section: IPCSection, section_number: str) -> str:
-    return f"""📝 **Description:**
-Section {section_number} of the Indian Penal Code (IPC) deals with {section['title'].lower()}.
+    return f"""<strong>Section {section_number}: {section['title']}</strong>
 
-⚖️ **Punishment:**
+<strong>Description:</strong>
+{section['definition']}
+
+<strong>Key Elements Required:</strong>
+{chr(10).join('&bull; ' + element for element in section['elements'])}
+
+<strong>Punishment:</strong>
 {section['punishment']}
 
-❗ **What Should a Victim Do?**
-1. File an FIR at the nearest police station.
+<strong>Victim Guidance:</strong>
+1. File a First Information Report (FIR) at the nearest police station immediately
 2. Document all evidence and maintain records of the incident
 3. Seek medical attention if needed and preserve medical reports
 4. Consider getting legal representation
 5. Keep track of all police and legal proceedings
 
-📄 **Important Documents Required:**
-• Valid ID proof (Aadhar/PAN/Voter ID)
-• Detailed written complaint
-• Medical reports (if applicable)
-• Photographs/videos of evidence
-• List of witnesses (if any)
+<strong>Important Documents Required:</strong>
+&bull; Valid ID proof (Aadhar/PAN/Voter ID)
+&bull; Detailed written complaint
+&bull; Medical reports (if applicable)
+&bull; Photographs/videos of evidence
+&bull; List of witnesses (if any)
 
-🆘 **Emergency Contacts:**
-• Police Emergency: 100
-• Women Helpline: 1091
-• Legal Services Authority: 1516
-• Ambulance: 108
-• Child Helpline: 1098
-• Senior Citizen Helpline: 14567"""
+<strong>Emergency Contacts:</strong>
+&bull; Police Emergency: 100
+&bull; Women Helpline: 1091
+&bull; Legal Services Authority: 1516
+&bull; Ambulance: 108
+&bull; Child Helpline: 1098
+&bull; Senior Citizen Helpline: 14567"""
 
 def format_court_info_response(query: str) -> str:
     if "timing" in query.lower() or "hours" in query.lower():
@@ -139,9 +144,11 @@ def legal_assist():
 @app.route('/')
 def home():
     return """
+    <!DOCTYPE html>
     <html>
         <head>
             <title>Legal Assistant</title>
+            <meta charset="utf-8">
             <style>
                 body { 
                     font-family: Arial, sans-serif;
@@ -162,6 +169,12 @@ def home():
                     border-radius: 5px;
                     background: #f9f9f9;
                     line-height: 1.6;
+                }
+                #response strong {
+                    display: block;
+                    margin-top: 15px;
+                    color: #000;
+                    font-size: 1.1em;
                 }
                 button {
                     padding: 10px 20px;
@@ -194,14 +207,14 @@ def home():
                         body: JSON.stringify({query})
                     });
                     const data = await response.json();
-                    document.getElementById('response').textContent = data.response;
+                    document.getElementById('response').innerHTML = data.response;
                 };
             </script>
         </body>
     </html>
     """
 
-# Example IPC section (more will be added)
+# Example IPC section
 ipc_sections: Dict[str, IPCSection] = {
     "302": {
         "title": "Murder",

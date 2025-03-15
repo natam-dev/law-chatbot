@@ -15,45 +15,37 @@ class ProblemPattern(TypedDict):
     section: str
 
 def format_legal_response(section: IPCSection, section_number: str) -> str:
-    return f"""
-**Section {section_number}: {section['title']}**
+    return f"""📝 **Description:**
+Section {section_number} of the Indian Penal Code (IPC) deals with {section['title'].lower()}.
 
-**Description:**
-{section['definition']}
-
-**Key Elements Required:**
-{chr(10).join('• ' + element for element in section['elements'])}
-
-**Punishment:**
+⚖️ **Punishment:**
 {section['punishment']}
 
-**Victim Guidance:**
-1. File a First Information Report (FIR) at the nearest police station immediately
+❗ **What Should a Victim Do?**
+1. File an FIR at the nearest police station.
 2. Document all evidence and maintain records of the incident
 3. Seek medical attention if needed and preserve medical reports
 4. Consider getting legal representation
 5. Keep track of all police and legal proceedings
 
-**Important Documents Required:**
+📄 **Important Documents Required:**
 • Valid ID proof (Aadhar/PAN/Voter ID)
 • Detailed written complaint
 • Medical reports (if applicable)
 • Photographs/videos of evidence
 • List of witnesses (if any)
 
-**Emergency Contacts:**
+🆘 **Emergency Contacts:**
 • Police Emergency: 100
 • Women Helpline: 1091
 • Legal Services Authority: 1516
 • Ambulance: 108
 • Child Helpline: 1098
-• Senior Citizen Helpline: 14567
-"""
+• Senior Citizen Helpline: 14567"""
 
 def format_court_info_response(query: str) -> str:
     if "timing" in query.lower() or "hours" in query.lower():
-        return """
-**Court Operating Hours:**
+        return """⏰ **Court Operating Hours:**
 
 **Regular Working Hours:**
 • Monday to Friday: 10:00 AM to 5:00 PM
@@ -66,9 +58,9 @@ def format_court_info_response(query: str) -> str:
 • Urgent Matters: As per court directions
 • Virtual Hearings: As scheduled by court
 
-Note: Timings may vary during summer/winter or due to special circumstances.
-"""
-    # Add more court info response formats
+Note: Timings may vary during summer/winter or due to special circumstances."""
+
+    # Add more court info response formats as needed...
 
 def generate_legal_response(query: str) -> str:
     lowercase_query = query.lower()
@@ -89,37 +81,33 @@ def generate_legal_response(query: str) -> str:
     for pattern in problem_patterns:
         if any(keyword in lowercase_query for keyword in pattern["keywords"]):
             section = pattern["section"]
-            return f"""
-**Legal Analysis of Your Situation:**
+            return f"""🔍 **Legal Analysis of Your Situation:**
 
 Based on your description, this appears to be related to {ipc_sections[section]['title']} (Section {section}).
 
 {format_legal_response(ipc_sections[section], section)}
 
-**Additional Recommendations:**
+📌 **Additional Recommendations:**
 • Document the entire incident in writing
 • Take photographs/videos if applicable
 • Gather contact information of witnesses
 • Keep all communication records
 • Consider filing a police complaint immediately
 
-**Legal Timeline:**
+⚡ **Legal Timeline:**
 1. File police complaint (FIR/NCR)
 2. Follow up with investigating officer
 3. Maintain evidence documentation
 4. Consider legal representation
 5. Prepare for legal proceedings
 
-Remember: Time is crucial in legal matters. Act promptly to protect your rights.
-"""
+Remember: Time is crucial in legal matters. Act promptly to protect your rights."""
 
     # If no specific match found
-    return """
-**Need More Information:**
+    return """❓ **Need More Information:**
 
-I need more details to provide specific legal guidance. Please provide:
+Please provide more details to help us better assist you:
 
-**Required Details:**
 1. What exactly happened?
 2. When did it occur?
 3. Who was involved?
@@ -136,8 +124,7 @@ I need more details to provide specific legal guidance. Please provide:
 • Police Emergency: 100
 • Legal Services: 1516
 • Women's Helpline: 1091
-• Cyber Crime: 1930
-"""
+• Cyber Crime: 1930"""
 
 @app.route('/api/legal-assist', methods=['POST'])
 def legal_assist():
@@ -174,6 +161,7 @@ def home():
                     border: 1px solid #ccc;
                     border-radius: 5px;
                     background: #f9f9f9;
+                    line-height: 1.6;
                 }
                 button {
                     padding: 10px 20px;
@@ -213,7 +201,7 @@ def home():
     </html>
     """
 
-# IPC Sections Database (shortened for example)
+# Example IPC section (more will be added)
 ipc_sections: Dict[str, IPCSection] = {
     "302": {
         "title": "Murder",
@@ -228,7 +216,6 @@ ipc_sections: Dict[str, IPCSection] = {
     }
 }
 
-# Problem patterns for matching queries
 problem_patterns: List[ProblemPattern] = [
     {
         "keywords": ["murder", "killed", "death", "died", "killing"],

@@ -213,7 +213,7 @@ def home():
     </html>
     """
 
-# IPC Sections Database
+# IPC Sections Database (shortened for example)
 ipc_sections: Dict[str, IPCSection] = {
     "302": {
         "title": "Murder",
@@ -226,7 +226,6 @@ ipc_sections: Dict[str, IPCSection] = {
             "Death of the person"
         ]
     }
-    # More sections will be added here
 }
 
 # Problem patterns for matching queries
@@ -235,7 +234,6 @@ problem_patterns: List[ProblemPattern] = [
         "keywords": ["murder", "killed", "death", "died", "killing"],
         "section": "302"
     }
-    # More patterns will be added here
 ]
 
 if __name__ == '__main__':
